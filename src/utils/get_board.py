@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 
-image = cv2.cvtColor(cv2.imread("../siema.png"), cv2.COLOR_BGR2RGB)
+image = cv2.cvtColor(cv2.imread("../../2.png"), cv2.COLOR_BGR2RGB)
 
 
 def resize(img, height=800):
@@ -48,3 +48,6 @@ for cnt in contours:
         pageContour = approx
 
 print(pageContour)
+cv2.imshow('dupa', img)
+if cv2.waitKey(0) & 0xff == 27:
+    cv2.destroyAllWindows()

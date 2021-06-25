@@ -5,13 +5,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 import cv2
-import random
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+from tensorflow.keras.models import load_model
+from VisualiseKerasLayers import display_activations_grid
 
-IMAGE_WIDTH = 40
-IMAGE_HEIGHT = 40
+IMAGE_WIDTH = 50
+IMAGE_HEIGHT = 50
 IMAGE_SIZE = (IMAGE_WIDTH, IMAGE_HEIGHT)
 differ_colors = True
 
@@ -47,6 +48,12 @@ X = X.reshape(X.shape[0], IMAGE_HEIGHT, IMAGE_WIDTH, 1)
 y = pd.get_dummies(df['label'])
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2)
 
+# # Add generators (maybe it will help a little)
+# data_gen = ImageDataGenerator(rotation_range=15, fill_mode='nearest',
+#                               brightness_range=[0.3, 1.5])
+# train_gen = data_gen.fit(X_train)
+# test_gen = data_gen.fit(X_test)
+
 # Build model
 model = Sequential()
 
@@ -76,16 +83,18 @@ early_stop = EarlyStopping(patience=5, monitor='val_acc', restore_best_weights=T
 # learning_rate_reduction = ReduceLROnPlateau(monitor='val_acc', patience=2, verbose=1, factor=0.5, min_lr=0.00001)
 callbacks = [early_stop]
 
-model.fit(X_train, y_train, callbacks=callbacks, epochs=100, validation_split=.2)
-
-# print(model.evaluate(X_test, y_test))
+# model.fit(X_train, y_train, callbacks=callbacks, epochs=100, validation_split=.2)
+# model.save('model.h5')
+model = load_model('acc1.h5')
+print(model.evaluate(X_test, y_test))
 
 plt.figure(figsize=(15, 15))
 print(model.evaluate(X_test, y_test)[1])
+
 l = [i.split('_')[1] for i in categories]
 
 for i in range(len(X_test)):
-    plt.subplot(4, 19, i + 1)
+    plt.subplot(5, 20, i + 1)
     plt.imshow(X_test[i], cmap='gray')
-    plt.title(FEN_dict[categories[np.argmax(model.predict(X_test[i].reshape(1, 40, 40, 1)))]])
+    plt.title(FEN_dict[categories[np.argmax(model.predict(X_test[i].reshape(1, IMAGE_HEIGHT, IMAGE_WIDTH, 1)))]])
 plt.show()
