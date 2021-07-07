@@ -10,7 +10,7 @@ FEN_dict = {'black_bishop': 'b', 'black_king': 'k', 'black_knight': 'n', 'black_
 
 model = load_model('../models/acc1.h5')
 
-images = get_figures_arrays('../../siema3.jpg')
+images = get_figures_arrays('../../krowa.jpg')
 i = 1
 space = 0
 
@@ -23,7 +23,6 @@ for img in images:
             space = 0
         notation += (FEN_dict[list(FEN_dict.keys())[np.argmax(prediction)]])
     else:
-        # print("to nie jest zadna bierka")
         space += 1
     if i % 8 is 0:
         if space is not 0:
