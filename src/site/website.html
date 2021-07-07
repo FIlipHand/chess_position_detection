@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chess position detection</title>
+</head>
+<body>
+<input type="file">
+<img src="" id="myImg" height="500">
+
+</body>
+
+<script>
+    window.addEventListener('load', function () {
+        document.querySelector('input[type="file"]').addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                let img = document.querySelector('img');
+                img.onload = () => {
+                    URL.revokeObjectURL(img.src);  // no longer needed, free memory
+                }
+
+                img.src = URL.createObjectURL(this.files[0]); // set src to blob url
+            }
+        });
+    });
+
+</script>
+</html>
