@@ -5,8 +5,11 @@
     <title>Chess position detection</title>
 </head>
 <body>
+<button id="apibtn">Get Position</button>
 <input type="file">
 <img src="" id="myImg" height="500">
+
+<p id="result">Result goes here!</p>
 
 </body>
 
@@ -23,6 +26,19 @@
             }
         });
     });
+
+    var apibtn = document.getElementById("apibtn");
+    apibtn.addEventListener("click", getPosition);
+
+    function getPosition() {
+        let image = new FormData()
+        image.append('file', document.querySelector('input[type="file"]').files[0])
+        fetch('http://127.0.0.1:8000/predict', {
+            method: 'POST',
+            body: image
+        }).then(res => res.json()).then(data => console.log(data))
+        // document.getElementById("result").textContent = result;
+    }
 
 </script>
 </html>
