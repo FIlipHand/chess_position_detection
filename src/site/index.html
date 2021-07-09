@@ -5,11 +5,16 @@
     <title>Chess position detection</title>
 </head>
 <body>
-<button id="apibtn">Get Position</button>
 <input type="file" id="myFile">
 <img src="" id="myImg" height="500">
 <p></p>
 <br>
+<select id="turn" onchange="reverse(this)">
+    <option value="white" selected>White to play</option>
+    <option value="black">Black to play</option>
+</select>
+<p></p>
+<button id="apibtn">Get Position</button>
 <a id="result" target="_blank">Result goes here!</a>
 
 </body>
@@ -45,16 +50,23 @@
 
     function setLichessLink(position) {
         let link = document.getElementById("result");
+        if (document.querySelector('#turn').selectedIndex) {
+            position = position.split("").reverse().join("") + '_b';
+        }
+        else{
+            position += '_w';
+        }
+        link.setAttribute('href', "https://lichess.org/editor/" + position);
         link.textContent = position;
-        link.setAttribute('href', "https://lichess.org/editor/" + position)
     }
 
-    window.addEventListener("paste", e =>{
-        if (e.clipboardData.files.length > 0){
+    // Pasting clipboard image straight into input and img tag
+    window.addEventListener("paste", e => {
+        if (e.clipboardData.files.length > 0) {
             const fileInput = document.querySelector('#myFile');
             fileInput.files = e.clipboardData.files;
 
-            if (e.clipboardData.files[0].type.startsWith("image/")){
+            if (e.clipboardData.files[0].type.startsWith("image/")) {
                 setPreviewImage(e.clipboardData.files[0]);
             }
         }
@@ -65,6 +77,18 @@
         fileReader.readAsDataURL(file);
         fileReader.onload = () => {
             document.querySelector('#myImg').src = fileReader.result;
+        }
+    }
+
+    function reverse(selectedObject) {
+        let link = document.getElementById("result");
+        if (!link.textContent.startsWith('Result')) {
+            link.textContent = link.textContent.split("").reverse().join("");
+            if (selectedObject.selectedIndex) {
+                link.setAttribute('href', "https://lichess.org/editor/" + link.textContent + '_b')
+            } else {
+                link.setAttribute('href', "https://lichess.org/editor/" + link.textContent + '_w')
+            }
         }
     }
 

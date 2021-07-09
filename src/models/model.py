@@ -31,4 +31,4 @@ def get_model_predictions(encoded_image) -> str:
             notation += '/'
             space = 0
         i += 1
-    return notation
+    return notation[:-1]
