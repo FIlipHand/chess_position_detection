@@ -37,6 +37,7 @@ def is_figure(image: np.array) -> bool:
 #TODO tego moze raczej nie byc jak bede madry
 def encoded_slice(encoded_image, number_tiles=None, col=None, row=None):
     im = Image.open(encoded_image.file)
+    im = im.convert('RGB')
     im_w, im_h = im.size
 
     columns = 0
