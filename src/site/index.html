@@ -6,7 +6,7 @@
 </head>
 <body>
 <input type="file" id="myFile">
-<img src="" id="myImg" height="500">
+<img src="contents/upload_image.png" id="myImg" height="500">
 <p></p>
 <br>
 <select id="turn" onchange="reverse(this)">
@@ -14,12 +14,15 @@
     <option value="black">Black to play</option>
 </select>
 <p></p>
-<button id="apibtn">Get Position</button>
+<button id="apibtn" disabled>Get Position</button>
 <a id="result" target="_blank">Result goes here!</a>
 
 </body>
 
 <script>
+    let apibtn = document.getElementById("apibtn");
+    apibtn.addEventListener("click", getPosition);
+
     window.addEventListener('load', function () {
         document.querySelector('#myFile').addEventListener('change', function () {
             if (this.files && this.files[0]) {
@@ -29,14 +32,12 @@
                 }
 
                 img.src = URL.createObjectURL(this.files[0]); // set src to blob url
+                apibtn.disabled = false;
             }
         });
     });
 
     // Handling api with fetch
-    var apibtn = document.getElementById("apibtn");
-    apibtn.addEventListener("click", getPosition);
-
     function getPosition() {
         let image = new FormData()
         image.append('file', document.querySelector('#myFile').files[0])
@@ -48,15 +49,16 @@
         })
     }
 
+    const lichesseditor = "https://lichess.org/editor/";
+
     function setLichessLink(position) {
         let link = document.getElementById("result");
         if (document.querySelector('#turn').selectedIndex) {
             position = position.split("").reverse().join("") + '_b';
-        }
-        else{
+        } else {
             position += '_w';
         }
-        link.setAttribute('href', "https://lichess.org/editor/" + position);
+        link.setAttribute('href', lichesseditor + position);
         link.textContent = position;
     }
 
@@ -68,6 +70,7 @@
 
             if (e.clipboardData.files[0].type.startsWith("image/")) {
                 setPreviewImage(e.clipboardData.files[0]);
+                apibtn.disabled = false;
             }
         }
     });
@@ -83,11 +86,13 @@
     function reverse(selectedObject) {
         let link = document.getElementById("result");
         if (!link.textContent.startsWith('Result')) {
-            link.textContent = link.textContent.split("").reverse().join("");
+            link.textContent = link.textContent.substring(0, link.textContent.length - 2).split("").reverse().join("");
             if (selectedObject.selectedIndex) {
-                link.setAttribute('href', "https://lichess.org/editor/" + link.textContent + '_b')
+                link.setAttribute('href', lichesseditor + link.textContent + '_b')
+                link.textContent += '_b'
             } else {
-                link.setAttribute('href', "https://lichess.org/editor/" + link.textContent + '_w')
+                link.setAttribute('href', lichesseditor + link.textContent + '_w')
+                link.textContent += '_w'
             }
         }
     }
